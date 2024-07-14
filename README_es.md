@@ -1,5 +1,7 @@
 # StarshipStatsOCR
 
+[README in English](https://github.com/Trewqa/spacex-starship-ocr/edit/master/README.md)
+
 StarshipStatsOCR es una herramienta avanzada de Reconocimiento Óptico de Caracteres (OCR) diseñada para extraer y procesar datos de telemetría de videos de lanzamiento de SpaceX Starship. Este proyecto tiene como objetivo proporcionar una extracción de datos precisa y en tiempo real para la velocidad, altitud y tiempo transcurrido de la misión a partir de transmisiones de video.
 
 ## Planteamiento del problema
