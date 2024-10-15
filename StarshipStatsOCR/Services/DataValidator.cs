@@ -10,11 +10,11 @@ namespace StarshipStatsOCR.Services
 
     public class DataValidator : IDataValidator
     {
-        private string _lastValidTime = "";
+        private string _lastValidTime = "T+00:00:00";
         private DateTime _lastValidDateTime = DateTime.MinValue;
-        private string _lastValidSpeed = "";
+        private string _lastValidSpeed = "0 KM/H";
         private int _lastValidSpeedValue = 0;
-        private string _lastValidAltitude = "";
+        private string _lastValidAltitude = "0 KM";
         private int _lastValidAltitudeValue = 0;
 
         public string ValidateAndUpdateField(string fieldName, string value)
@@ -22,8 +22,8 @@ namespace StarshipStatsOCR.Services
             return fieldName switch
             {
                 "Time" => ValidateTime(value),
-                "Speed" => ValidateSpeed(value),
-                "Altitude" => ValidateAltitude(value),
+                "B_Speed" => ValidateSpeed(value),
+                "B_Altitude" => ValidateAltitude(value),
                 _ => value,
             };
         }
@@ -50,8 +50,8 @@ namespace StarshipStatsOCR.Services
                     }
 
                     // Si es el primer tiempo válido o la diferencia es menor o igual a 5 segundos
-                    if (_lastValidDateTime == DateTime.MinValue ||
-                        Math.Abs((currentTime - _lastValidDateTime).TotalSeconds) <= 5)
+                    //if (_lastValidDateTime == DateTime.MinValue ||
+                    //    Math.Abs((currentTime - _lastValidDateTime).TotalSeconds) <= 5)
                     {
                         _lastValidTime = value;
                         _lastValidDateTime = currentTime;

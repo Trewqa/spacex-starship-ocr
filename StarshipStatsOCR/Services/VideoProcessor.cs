@@ -52,12 +52,55 @@ namespace StarshipStatsOCR.Services
                 {
                     using var ocrEngine = _ocrEngineFactory(); // Crear una nueva instancia del motor OCR para cada tarea
                     var results = ProcessFrame(frameCopy, currentFrameCount, ocrEngine);
+
+                    // Comprobamos las condiciones necesarias
+                    if (results.Length < 6)
+                    {
+                        // Si el arreglo no contiene la cantidad necesaria de elementos, ignoramos la línea
+                        Console.WriteLine("1");
+                        return null;
+                    }
+
+                    // Comprobación de que result[0] es un número
+                    if (!double.TryParse(results[0], out _))
+                    {
+                        // Si result[0] no es un número, ignoramos la línea
+                        Console.WriteLine("2");
+                        return null;
+                    }
+
+                    // Comprobación de que result[1] termina en "KM/H" y antes de eso es un número
+                    if (!results[1].EndsWith(" KM/H") || !double.TryParse(results[1].Replace(" KM/H", ""), out _))
+                    {
+                        // Si result[1] no contiene un valor de velocidad válido, ignoramos la línea
+                        Console.WriteLine("3");
+                        return null;
+                    }
+
+                    // Comprobación de que result[2] es un número con "KM"
+                    if (!results[2].EndsWith(" KM") || !double.TryParse(results[2].Replace(" KM", ""), out _))
+                    {
+                        // Si result[2] no contiene una distancia válida, ignoramos la línea
+                        Console.WriteLine("4 " + results[2]);
+                        return null;
+                    }
+
+                    // Comprobación de que result[5] corresponde al formato de tiempo T+XX:XX:XX
+                    var timePattern = @"^T\+\d{2}:\d{2}:\d{2}$";
+                    if (!System.Text.RegularExpressions.Regex.IsMatch(results[5], timePattern))
+                    {
+                        // Si result[5] no corresponde al formato de tiempo, ignoramos la línea
+                        Console.WriteLine("5 " + results[5]);
+                        return null;
+                    }
+
                     var line = string.Join(",", results);
 
                     Console.WriteLine(line);
 
                     return line;
                 });
+
 
                 tasks.Add(task);
 
@@ -81,7 +124,7 @@ namespace StarshipStatsOCR.Services
 
         private string[] ProcessFrame(Mat frame, int frameCount, IOcrEngine ocrEngine)
         {
-            var results = new string[4];
+            var results = new string[6];
             results[0] = frameCount.ToString();
 
             for (int i = 0; i < _appSettings.Rois.Length; i++)
